@@ -47,7 +47,7 @@ Environment variables:
 
 ```text
 PORT=8080
-CORS_ALLOWED_ORIGINS=http://tmkolkata.org,https://tmkolkata.org,http://tm-kolkata.org,https://tm-kolkata.org,https://somalrudra.github.io,http://localhost:3000,http://localhost:4173
+CORS_ALLOWED_ORIGINS=http://tmkolkata.org,https://tmkolkata.org,http://analytics.tmkolkata.org,https://analytics.tmkolkata.org,http://tm-kolkata.org,https://tm-kolkata.org,https://somalrudra.github.io,http://localhost:3000,http://localhost:4173
 FRONTEND_RESET_URL=https://analytics.tmkolkata.org/reset-password/
 ADMIN_USERNAME=admin
 ADMIN_EMAIL=tmbengal108@gmail.com
