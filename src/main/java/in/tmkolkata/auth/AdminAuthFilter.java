@@ -49,6 +49,9 @@ public class AdminAuthFilter extends OncePerRequestFilter {
     }
 
     return ("/api/leads".equals(path) && "GET".equals(method))
-        || ("/api/leads/update-status".equals(path) && "PATCH".equals(method));
+        || ("/api/leads/export".equals(path) && "GET".equals(method))
+        || ("/api/leads/update-status".equals(path) && "PATCH".equals(method))
+        || ("/api/events/admin".equals(path) && "GET".equals(method))
+        || ("/api/events".equals(path) && "POST".equals(method));
   }
 }

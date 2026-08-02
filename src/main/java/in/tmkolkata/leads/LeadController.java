@@ -1,9 +1,16 @@
 package in.tmkolkata.leads;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,9 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class LeadController {
 
   private final LeadRepository leadRepository;
+  private final ObjectMapper objectMapper;
 
-  public LeadController(LeadRepository leadRepository) {
+  public LeadController(LeadRepository leadRepository, ObjectMapper objectMapper) {
     this.leadRepository = leadRepository;
+    this.objectMapper = objectMapper;
   }
 
   @PostMapping("/registrations")
@@ -60,6 +69,31 @@ public class LeadController {
   @GetMapping("/leads")
   public List<LeadRecord> leads() {
     return leadRepository.findAll();
+  }
+
+  @GetMapping("/leads/export")
+  public ResponseEntity<byte[]> leadSnapshot() {
+    Map<String, Object> snapshot = Map.of(
+        "generated_at", Instant.now().toString(),
+        "records", leadRepository.findAll()
+    );
+
+    try {
+      byte[] body = objectMapper.writerWithDefaultPrettyPrinter()
+          .writeValueAsString(snapshot)
+          .getBytes(StandardCharsets.UTF_8);
+
+      return ResponseEntity.ok()
+          .contentType(MediaType.APPLICATION_JSON)
+          .header(HttpHeaders.CONTENT_DISPOSITION,
+              ContentDisposition.attachment()
+                  .filename("tm-kolkata-user-data-snapshot.json")
+                  .build()
+                  .toString())
+          .body(body);
+    } catch (JsonProcessingException exception) {
+      throw new IllegalArgumentException("Lead snapshot could not be generated", exception);
+    }
   }
 
   @GetMapping("/health")
