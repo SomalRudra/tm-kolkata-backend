@@ -22,6 +22,7 @@ mvn spring-boot:run
 - `POST /api/events` requires admin access token
 - `PATCH /api/events/{id}` requires admin access token
 - `DELETE /api/events/{id}` requires admin access token
+- `POST /api/campaigns/broadcast` requires admin access token and sends email via SMTP or WhatsApp via `WHATSAPP_WEBHOOK_URL`
 - `GET /api/health`
 - `POST /api/auth/login`
 - `POST /api/auth/refresh`
