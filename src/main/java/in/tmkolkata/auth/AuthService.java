@@ -21,7 +21,7 @@ public class AuthService {
   private final TokenService tokenService;
   private final AuthEmailService authEmailService;
   private final long accessTokenMinutes;
-  private final long refreshTokenDays;
+  private final long refreshTokenHours;
   private final long resetTokenMinutes;
   private final String frontendResetUrl;
   private final boolean includeResetLinkInResponse;
@@ -34,7 +34,7 @@ public class AuthService {
       TokenService tokenService,
       AuthEmailService authEmailService,
       @Value("${app.auth.access-token-minutes}") long accessTokenMinutes,
-      @Value("${app.auth.refresh-token-days}") long refreshTokenDays,
+      @Value("${app.auth.refresh-token-hours}") long refreshTokenHours,
       @Value("${app.auth.reset-token-minutes}") long resetTokenMinutes,
       @Value("${app.frontend.reset-url}") String frontendResetUrl,
       @Value("${app.auth.include-reset-link-in-response}") boolean includeResetLinkInResponse
@@ -46,7 +46,7 @@ public class AuthService {
     this.tokenService = tokenService;
     this.authEmailService = authEmailService;
     this.accessTokenMinutes = accessTokenMinutes;
-    this.refreshTokenDays = refreshTokenDays;
+    this.refreshTokenHours = refreshTokenHours;
     this.resetTokenMinutes = resetTokenMinutes;
     this.frontendResetUrl = frontendResetUrl;
     this.includeResetLinkInResponse = includeResetLinkInResponse;
@@ -141,7 +141,7 @@ public class AuthService {
         admin,
         tokenService.hash(refreshToken),
         REFRESH,
-        Instant.now().plus(refreshTokenDays, ChronoUnit.DAYS)
+        Instant.now().plus(refreshTokenHours, ChronoUnit.HOURS)
     ));
 
     return new AuthResponse(accessToken, refreshToken, accessTokenMinutes * 60, admin.getUsername());

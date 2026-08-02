@@ -49,6 +49,8 @@ FRONTEND_RESET_URL=https://somalrudra.github.io/tm-kolkata-analytics-funnel/rese
 ADMIN_USERNAME=admin
 ADMIN_EMAIL=tmbengal108@gmail.com
 ADMIN_PASSWORD=tmAdmin@2026
+ACCESS_TOKEN_MINUTES=60
+REFRESH_TOKEN_HOURS=3
 ```
 
 `server.port` reads Railway's `PORT` variable automatically, with `8080` as a local fallback.
