@@ -20,6 +20,8 @@ mvn spring-boot:run
 - `GET /api/events`
 - `GET /api/events/admin` requires admin access token
 - `POST /api/events` requires admin access token
+- `PATCH /api/events/{id}` requires admin access token
+- `DELETE /api/events/{id}` requires admin access token
 - `GET /api/health`
 - `POST /api/auth/login`
 - `POST /api/auth/refresh`

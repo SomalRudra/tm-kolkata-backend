@@ -9,6 +9,7 @@ public record EventResponse(
     String event_mode,
     String event_date,
     String venue,
+    String description,
     int capacity,
     boolean published,
     String created_at
@@ -22,6 +23,7 @@ public record EventResponse(
         event.getEventMode(),
         event.getEventDate().toString(),
         event.getVenue(),
+        event.getDescription(),
         event.getCapacity(),
         event.isPublished(),
         event.getCreatedAt().toString()
@@ -35,9 +37,27 @@ public record EventResponse(
         request.event_mode(),
         Instant.parse(request.event_date()),
         request.venue(),
+        normalizeDescription(request.description()),
         request.capacity(),
         request.published() == null || request.published(),
         Instant.now()
     );
+  }
+
+  static void updateEntity(EventEntity event, EventRequest request) {
+    event.update(
+        request.title(),
+        request.kolkata_region(),
+        request.event_mode(),
+        Instant.parse(request.event_date()),
+        request.venue(),
+        normalizeDescription(request.description()),
+        request.capacity(),
+        request.published() == null || request.published()
+    );
+  }
+
+  private static String normalizeDescription(String description) {
+    return description == null ? "" : description;
   }
 }

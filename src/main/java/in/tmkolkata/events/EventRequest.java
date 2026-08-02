@@ -10,6 +10,7 @@ public record EventRequest(
     @NotBlank String event_mode,
     @NotBlank String event_date,
     @NotBlank String venue,
+    String description,
     @NotNull @Min(1) Integer capacity,
     Boolean published
 ) {
