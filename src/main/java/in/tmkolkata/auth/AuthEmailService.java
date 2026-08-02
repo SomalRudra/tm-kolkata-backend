@@ -4,10 +4,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthEmailService {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(AuthEmailService.class);
 
   private final JavaMailSender mailSender;
   private final String smtpHost;
@@ -41,6 +45,7 @@ public class AuthEmailService {
       mailSender.send(message);
       return true;
     } catch (MailException exception) {
+      LOGGER.warn("Admin password reset email failed: {}", exception.getMessage(), exception);
       return false;
     }
   }
