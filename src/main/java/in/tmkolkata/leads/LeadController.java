@@ -63,8 +63,13 @@ public class LeadController {
   }
 
   @GetMapping("/health")
-  public Map<String, String> health() {
-    return Map.of("status", "ok", "service", "tm-kolkata-backend");
+  public Map<String, Object> health() {
+    return Map.of(
+        "status", "ok",
+        "service", "tm-kolkata-backend",
+        "storage", "database",
+        "leadCount", leadRepository.count()
+    );
   }
 
   public record LeadResponse(long id, String type, Instant submittedAt) {
