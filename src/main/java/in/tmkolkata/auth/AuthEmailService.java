@@ -1,6 +1,7 @@
 package in.tmkolkata.auth;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,11 @@ public class AuthEmailService {
     message.setSubject("TM Kolkata admin password reset");
     message.setText("Open this link to reset your TM Kolkata admin password:\n\n" + resetUrl
         + "\n\nThis link expires soon. If you did not request this, ignore this email.");
-    mailSender.send(message);
-    return true;
+    try {
+      mailSender.send(message);
+      return true;
+    } catch (MailException exception) {
+      return false;
+    }
   }
 }
