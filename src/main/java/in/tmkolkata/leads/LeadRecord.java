@@ -1,6 +1,7 @@
 package in.tmkolkata.leads;
 
 import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public record LeadRecord(
@@ -41,22 +42,36 @@ public record LeadRecord(
   }
 
   public static LeadRecord eventRegistration(EventRegistrationRequest request) {
+    Map<String, String> details = new LinkedHashMap<>();
+    details.put("event_id", request.event_id() == null ? "" : String.valueOf(request.event_id()));
+    details.put("city_state", request.city_state());
+    details.put("kolkata_region", request.kolkata_region());
+    details.put("event_date", request.event_date());
+    details.put("event_mode", request.event_mode());
+    details.put("source_channel", request.source_channel());
+    details.put("utm_source", request.utm_source() == null ? "" : request.utm_source());
+    details.put("utm_campaign", request.utm_campaign() == null ? "" : request.utm_campaign());
+    details.put("bucket", request.bucket());
+    details.put("age_group", request.age_group() == null ? "" : request.age_group());
+    details.put("occupation", request.occupation() == null ? "" : request.occupation());
+    details.put("heard_about", request.heard_about() == null ? "" : request.heard_about());
+    details.put("motivation", request.motivation() == null ? "" : request.motivation());
+    details.put("prior_meditation", request.prior_meditation() == null ? "" : request.prior_meditation());
+    details.put("prior_meditation_types", request.prior_meditation_types() == null ? "" : request.prior_meditation_types());
+    details.put("current_challenge", request.current_challenge() == null ? "" : request.current_challenge());
+    details.put("stress_level", request.stress_level() == null ? "" : request.stress_level());
+    details.put("practice_commitment", request.practice_commitment() == null ? "" : request.practice_commitment());
+    details.put("best_contact_time", request.best_contact_time() == null ? "" : request.best_contact_time());
+    details.put("future_updates", request.future_updates() == null ? "" : request.future_updates());
+    details.put("pre_session_questions", request.pre_session_questions() == null ? "" : request.pre_session_questions());
+
     return new LeadRecord(
         0,
         "event_registration",
         request.full_name(),
         request.email(),
         request.phone(),
-        Map.of(
-            "event_id", request.event_id() == null ? "" : String.valueOf(request.event_id()),
-            "kolkata_region", request.kolkata_region(),
-            "event_date", request.event_date(),
-            "event_mode", request.event_mode(),
-            "source_channel", request.source_channel(),
-            "utm_source", request.utm_source() == null ? "" : request.utm_source(),
-            "utm_campaign", request.utm_campaign() == null ? "" : request.utm_campaign(),
-            "bucket", request.bucket()
-        ),
+        details,
         Instant.now()
     );
   }
