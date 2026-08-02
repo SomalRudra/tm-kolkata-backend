@@ -48,6 +48,7 @@ public record LeadRecord(
         request.email(),
         request.phone(),
         Map.of(
+            "event_id", request.event_id() == null ? "" : String.valueOf(request.event_id()),
             "kolkata_region", request.kolkata_region(),
             "event_date", request.event_date(),
             "event_mode", request.event_mode(),

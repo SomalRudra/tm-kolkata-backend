@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 public record EventRegistrationRequest(
+    Long event_id,
     @NotBlank String full_name,
     @NotBlank @Email String email,
     @NotBlank @Pattern(regexp = "^[0-9+\\-\\s]{8,18}$") String phone,
