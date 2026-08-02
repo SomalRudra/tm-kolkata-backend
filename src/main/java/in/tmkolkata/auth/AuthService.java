@@ -115,6 +115,18 @@ public class AuthService {
     token.markUsed();
   }
 
+  @Transactional
+  public void changePassword(String username, String currentPassword, String newPassword) {
+    AdminUserEntity admin = adminUserRepository.findByUsername(username)
+        .orElseThrow(() -> new IllegalArgumentException("Invalid admin credentials"));
+
+    if (!passwordEncoder.matches(currentPassword, admin.getPasswordHash())) {
+      throw new IllegalArgumentException("Invalid admin credentials");
+    }
+
+    admin.setPasswordHash(passwordEncoder.encode(newPassword));
+  }
+
   private AuthResponse issueTokens(AdminUserEntity admin) {
     String accessToken = tokenService.newToken();
     String refreshToken = tokenService.newToken();

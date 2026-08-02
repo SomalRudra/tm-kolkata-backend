@@ -44,6 +44,12 @@ public class AuthController {
     return Map.of("ok", true);
   }
 
+  @PostMapping("/change-password")
+  public Map<String, Boolean> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+    authService.changePassword(request.username(), request.current_password(), request.new_password());
+    return Map.of("ok", true);
+  }
+
   @ExceptionHandler(IllegalArgumentException.class)
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public Map<String, String> unauthorized(IllegalArgumentException exception) {
@@ -68,6 +74,13 @@ public class AuthController {
 
   public record ResetPasswordRequest(
       @NotBlank String token,
+      @NotBlank @Size(min = 8, max = 120) String new_password
+  ) {
+  }
+
+  public record ChangePasswordRequest(
+      @NotBlank String username,
+      @NotBlank String current_password,
       @NotBlank @Size(min = 8, max = 120) String new_password
   ) {
   }
