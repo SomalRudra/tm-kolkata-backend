@@ -16,6 +16,10 @@ mvn spring-boot:run
 - `POST /api/leads/inquiry`
 - `PATCH /api/leads/update-status` requires admin access token
 - `GET /api/leads` requires admin access token
+- `GET /api/leads/export` requires admin access token and downloads a JSON snapshot
+- `GET /api/events`
+- `GET /api/events/admin` requires admin access token
+- `POST /api/events` requires admin access token
 - `GET /api/health`
 - `POST /api/auth/login`
 - `POST /api/auth/refresh`
