@@ -44,6 +44,15 @@ FRONTEND_RESET_URL=https://somalrudra.github.io/tm-kolkata-analytics-funnel/rese
 ADMIN_USERNAME=admin
 ADMIN_EMAIL=tmbengal108@gmail.com
 ADMIN_PASSWORD=<set-on-first-deploy-only>
+RESEND_API_KEY=<resend-api-key>
+RESEND_FROM_EMAIL=TM Kolkata <onboarding@resend.dev>
+```
+
+`RESEND_API_KEY` sends reset emails through Resend's HTTPS API on port 443, which works on Railway plans where outbound SMTP is blocked. Use `onboarding@resend.dev` for initial tests, or verify a domain in Resend and set `RESEND_FROM_EMAIL` to an address on that domain.
+
+SMTP variables are still supported as a fallback when `RESEND_API_KEY` is empty:
+
+```text
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USERNAME=<gmail-address>
