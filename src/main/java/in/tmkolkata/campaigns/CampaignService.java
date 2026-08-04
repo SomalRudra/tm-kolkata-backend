@@ -25,8 +25,7 @@ public class CampaignService {
   private final JavaMailSender mailSender;
   private final RestClient restClient;
   private final String smtpHost;
-  private final String smtpUsername;
-  private final String adminEmail;
+  private final String mailFromEmail;
   private final String whatsappWebhookUrl;
 
   public CampaignService(
@@ -34,16 +33,15 @@ public class CampaignService {
       JavaMailSender mailSender,
       RestClient.Builder restClientBuilder,
       @Value("${spring.mail.host}") String smtpHost,
-      @Value("${spring.mail.username}") String smtpUsername,
       @Value("${app.auth.admin-email}") String adminEmail,
+      @Value("${app.mail.from-email:}") String mailFromEmail,
       @Value("${app.whatsapp.webhook-url}") String whatsappWebhookUrl
   ) {
     this.leadRepository = leadRepository;
     this.mailSender = mailSender;
     this.restClient = restClientBuilder.build();
     this.smtpHost = smtpHost;
-    this.smtpUsername = smtpUsername;
-    this.adminEmail = adminEmail;
+    this.mailFromEmail = mailFromEmail == null || mailFromEmail.isBlank() ? adminEmail : mailFromEmail;
     this.whatsappWebhookUrl = whatsappWebhookUrl;
   }
 
@@ -74,7 +72,8 @@ public class CampaignService {
       try {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(recipient.email());
-        message.setFrom(smtpUsername == null || smtpUsername.isBlank() ? adminEmail : smtpUsername);
+        message.setFrom(mailFromEmail);
+        message.setReplyTo(mailFromEmail);
         message.setSubject(request.message_payload().subject() == null || request.message_payload().subject().isBlank()
             ? request.template_name()
             : request.message_payload().subject());

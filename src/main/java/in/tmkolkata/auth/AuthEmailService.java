@@ -15,19 +15,17 @@ public class AuthEmailService {
 
   private final JavaMailSender mailSender;
   private final String smtpHost;
-  private final String smtpUsername;
-  private final String adminEmail;
+  private final String mailFromEmail;
 
   public AuthEmailService(
       JavaMailSender mailSender,
       @Value("${spring.mail.host}") String smtpHost,
-      @Value("${spring.mail.username}") String smtpUsername,
-      @Value("${app.auth.admin-email}") String adminEmail
+      @Value("${app.auth.admin-email}") String adminEmail,
+      @Value("${app.mail.from-email:}") String mailFromEmail
   ) {
     this.mailSender = mailSender;
     this.smtpHost = smtpHost;
-    this.smtpUsername = smtpUsername;
-    this.adminEmail = adminEmail;
+    this.mailFromEmail = mailFromEmail == null || mailFromEmail.isBlank() ? adminEmail : mailFromEmail;
   }
 
   public boolean sendResetLink(String to, String resetUrl) {
@@ -37,7 +35,8 @@ public class AuthEmailService {
 
     SimpleMailMessage message = new SimpleMailMessage();
     message.setTo(to);
-    message.setFrom(smtpUsername == null || smtpUsername.isBlank() ? adminEmail : smtpUsername);
+    message.setFrom(mailFromEmail);
+    message.setReplyTo(mailFromEmail);
     message.setSubject("TM Kolkata admin password reset");
     message.setText("Open this link to reset your TM Kolkata admin password:\n\n" + resetUrl
         + "\n\nThis link expires soon. If you did not request this, ignore this email.");
