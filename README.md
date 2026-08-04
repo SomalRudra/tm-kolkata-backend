@@ -22,7 +22,7 @@ mvn spring-boot:run
 - `POST /api/events` requires admin access token
 - `PATCH /api/events/{id}` requires admin access token
 - `DELETE /api/events/{id}` requires admin access token
-- `POST /api/campaigns/broadcast` requires admin access token and sends email via SMTP or WhatsApp via `WHATSAPP_WEBHOOK_URL`
+- `POST /api/campaigns/broadcast` requires admin access token and sends email via Brevo API or WhatsApp via `WHATSAPP_WEBHOOK_URL`
 - `GET /api/health`
 - `POST /api/auth/login`
 - `POST /api/auth/refresh`
@@ -54,6 +54,8 @@ ADMIN_EMAIL=tmbengal108@gmail.com
 ADMIN_PASSWORD=tmAdmin@2026
 ACCESS_TOKEN_MINUTES=60
 REFRESH_TOKEN_HOURS=3
+MAIL_FROM_EMAIL=business@tmkolkata.org
+BREVO_API_KEY=xkeysib-...
 ```
 
 `server.port` reads Railway's `PORT` variable automatically, with `8080` as a local fallback.
