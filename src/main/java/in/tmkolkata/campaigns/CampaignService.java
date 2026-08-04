@@ -2,6 +2,7 @@ package in.tmkolkata.campaigns;
 
 import in.tmkolkata.leads.LeadRecord;
 import in.tmkolkata.leads.LeadRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -62,11 +63,13 @@ public class CampaignService {
 
   private BroadcastResponse sendEmail(BroadcastRequest request, List<LeadRecord> recipients) {
     if (smtpHost == null || smtpHost.isBlank()) {
-      return response(request, recipients, 0, recipients.size(), "SMTP is not configured", "spring-mail");
+      return response(request, recipients, 0, recipients.size(), "SMTP is not configured", "spring-mail",
+          List.of("SMTP_HOST is blank in the backend environment."));
     }
 
     int sent = 0;
     int failed = 0;
+    List<String> errors = new ArrayList<>();
 
     for (LeadRecord recipient : recipients) {
       try {
@@ -82,22 +85,26 @@ public class CampaignService {
         sent += 1;
       } catch (MailException exception) {
         failed += 1;
-        LOGGER.warn("Campaign email failed for lead {}: {}", recipient.id(), exception.getMessage(), exception);
+        String error = "lead " + recipient.id() + ": " + rootMessage(exception);
+        errors.add(error);
+        LOGGER.warn("Campaign email failed for lead {}: {}", recipient.id(), error, exception);
       }
     }
 
     return response(request, recipients, sent, failed, failed == 0 ? "Email broadcast sent" : "Email broadcast partially failed",
-        "spring-mail");
+        "spring-mail", errors);
   }
 
   private BroadcastResponse sendWhatsapp(BroadcastRequest request, List<LeadRecord> recipients) {
     if (whatsappWebhookUrl == null || whatsappWebhookUrl.isBlank()) {
       return response(request, recipients, 0, recipients.size(),
-          "WhatsApp provider is not configured. Set WHATSAPP_WEBHOOK_URL in Railway.", "webhook");
+          "WhatsApp provider is not configured. Set WHATSAPP_WEBHOOK_URL in Railway.", "webhook",
+          List.of("WHATSAPP_WEBHOOK_URL is blank in the backend environment."));
     }
 
     int sent = 0;
     int failed = 0;
+    List<String> errors = new ArrayList<>();
 
     for (LeadRecord recipient : recipients) {
       try {
@@ -115,12 +122,14 @@ public class CampaignService {
         sent += 1;
       } catch (RestClientException exception) {
         failed += 1;
-        LOGGER.warn("WhatsApp webhook failed for lead {}: {}", recipient.id(), exception.getMessage(), exception);
+        String error = "lead " + recipient.id() + ": " + rootMessage(exception);
+        errors.add(error);
+        LOGGER.warn("WhatsApp webhook failed for lead {}: {}", recipient.id(), error, exception);
       }
     }
 
     return response(request, recipients, sent, failed,
-        failed == 0 ? "WhatsApp broadcast sent" : "WhatsApp broadcast partially failed", "webhook");
+        failed == 0 ? "WhatsApp broadcast sent" : "WhatsApp broadcast partially failed", "webhook", errors);
   }
 
   private List<LeadRecord> recipients(BroadcastRequest request) {
@@ -146,7 +155,8 @@ public class CampaignService {
       int sent,
       int failed,
       String status,
-      String provider
+      String provider,
+      List<String> errors
   ) {
     return new BroadcastResponse(
         request.channel(),
@@ -155,10 +165,21 @@ public class CampaignService {
         failed,
         status,
         provider,
+        "email".equalsIgnoreCase(request.channel()) ? mailFromEmail : null,
+        errors,
         recipients.stream()
             .map((lead) -> new BroadcastRecipient(String.valueOf(lead.id()), lead.fullName(), lead.email(), lead.phone()))
             .toList()
     );
+  }
+
+  private String rootMessage(Exception exception) {
+    Throwable current = exception;
+    while (current.getCause() != null) {
+      current = current.getCause();
+    }
+
+    return current.getMessage() == null ? exception.getMessage() : current.getMessage();
   }
 
   private record WhatsappWebhookPayload(

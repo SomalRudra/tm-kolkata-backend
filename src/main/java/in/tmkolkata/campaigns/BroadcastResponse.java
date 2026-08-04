@@ -9,6 +9,8 @@ public record BroadcastResponse(
     int failed_count,
     String status,
     String provider,
+    String sender_email,
+    List<String> errors,
     List<BroadcastRecipient> recipients
 ) {
 }
